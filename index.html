@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>CheckDetour - Vistoria Técnica</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="mobile-wrapper">
+    
+    <!-- Top Status Bar -->
+    <div class="app-status-bar">
+      <span class="status-time" id="liveClock">09:41</span>
+      <div class="status-icons">
+        <i class="fa-solid fa-signal"></i>
+        <i class="fa-solid fa-wifi"></i>
+        <i class="fa-solid fa-battery-full"></i>
+      </div>
+    </div>
+
+    <!-- App Header Oficial CheckDetour -->
+    <header class="app-header">
+      <button class="nav-btn" aria-label="Voltar">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <div class="nav-title">CheckDetour</div>
+      <button class="nav-btn" aria-label="Menu" onclick="toggleJsonDrawer()">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </header>
+
+    <!-- App User Info Bar -->
+    <div class="user-strip">
+      <div class="user-avatar-circle">
+        <i class="fa-solid fa-parachute-box"></i>
+      </div>
+      <div class="user-details">
+        <div class="user-name">RIGGER / INSPETOR: CARLOS SILVA</div>
+        <div class="user-project">EQUIPAMENTO: VELAME PRINCIPAL (9-CELL)</div>
+      </div>
+    </div>
+
+    <!-- Main Scrollable Form Content -->
+    <main class="form-container">
+
+      <!-- Question Component Block (Padrão Oficial FormsDetails) -->
+      <section class="question-block">
+        
+        <!-- Question Title Header -->
+        <div class="question-header">
+          <h2 class="question-title">01. INSPEÇÃO ESTRUTURAL DO VELAME E LINHAS</h2>
+          <div class="question-actions">
+            <button class="btn-icon-action" title="Informações" onclick="showInfoAlert()">
+              <i class="fa-solid fa-circle-info"></i>
+            </button>
+            <button class="btn-icon-action" title="QR Code">
+              <i class="fa-solid fa-qrcode"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Question Reference Text -->
+        <div class="reference-box">
+          <p class="reference-text">
+            Toque nas seções do velame, células ou linhas para apontar não-conformidades. 
+            Seções em <span class="tag-ok">VERDE</span> estão em conformidade; ao tocar, a seção fica <span class="tag-defect">VERMELHA</span> demarcando a avaria.
+          </p>
+        </div>
+
+        <!-- Professional Diagram Annotation Canvas -->
+        <div class="diagram-canvas-card">
+          
+          <!-- Modern Clean Status Ribbon -->
+          <div class="diagram-status-ribbon">
+            <div class="status-counter-group">
+              <span class="counter-badge ok"><i class="fa-solid fa-circle-check"></i> <span id="countOk">22</span> Normais</span>
+              <span class="counter-badge alert" id="badgeAlerts"><i class="fa-solid fa-circle-exclamation"></i> <span id="countDefects">0</span> Avarias</span>
+            </div>
+            <button class="btn-reset-clean" onclick="resetAllZones()" title="Limpar marcações">
+              <i class="fa-solid fa-arrow-rotate-left"></i> Limpar
+            </button>
+          </div>
+
+          <!-- Interactive Parachute Diagram Viewport (100% Vector Blueprint) -->
+          <div class="diagram-viewport" id="diagramViewport">
+            
+            <!-- SVG Technical Parachute Blueprint & Interactive Hotspots Layer -->
+            <svg class="zones-svg-layer" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" id="svgLayer">
+              
+              <!-- Background Blueprint Grid -->
+              <defs>
+                <pattern id="blueprint-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#E2E8F0" stroke-width="0.75"/>
+                </pattern>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748B" />
+                </marker>
+              </defs>
+
+              <rect width="100%" height="100%" fill="#F8FAFC"/>
+              <rect width="100%" height="100%" fill="url(#blueprint-grid)"/>
+
+              <!-- ========================================== -->
+              <!-- 1. VISTA SUPERIOR: VELAME PRINCIPAL 9 CÉLULAS -->
+              <!-- ========================================== -->
+              <g class="blueprint-labels">
+                <text x="50" y="32" font-family="'Montserrat', sans-serif" font-size="13" font-weight="800" fill="#1E293B">PLANTA SUPERIOR DO VELAME (9-CELL CANOPY)</text>
+                <text x="50" y="48" font-family="'Montserrat', sans-serif" font-size="9" font-weight="600" fill="#64748B">BORDA DE ATAQUE (ENTRADA DE AR) ▲ | ▼ BORDA DE FUGA (FREIOS)</text>
+              </g>
+
+              <!-- Outer Boundary & Stabilizers -->
+              <path d="M 20,100 L 45,70 L 905,70 L 930,100 L 930,260 L 905,290 L 45,290 L 20,260 Z" fill="#EEF2F6" stroke="#94A3B8" stroke-width="2"/>
+              
+              <!-- Estabilizadores Laterais (Esq / Dir) -->
+              <path d="M 20,100 L 45,70 L 45,290 L 20,260 Z" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5" stroke-dasharray="3 2"/>
+              <text x="25" y="185" font-family="'Montserrat', sans-serif" font-size="8" font-weight="700" fill="#475569" transform="rotate(-90 25,185)">ESTAB. ESQ</text>
+
+              <path d="M 905,70 L 930,100 L 930,260 L 905,290 Z" fill="#E2E8F0" stroke="#64748B" stroke-width="1.5" stroke-dasharray="3 2"/>
+              <text x="918" y="185" font-family="'Montserrat', sans-serif" font-size="8" font-weight="700" fill="#475569" transform="rotate(90 918,185)">ESTAB. DIR</text>
+
+              <!-- Desenho das 9 Células (Costelas e Painéis) -->
+              <!-- Célula 1 -->
+              <rect x="50" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="95" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 01</text>
+              <line x1="50" y1="110" x2="140" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="50" y1="250" x2="140" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 2 -->
+              <rect x="145" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="190" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 02</text>
+              <line x1="145" y1="110" x2="235" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="145" y1="250" x2="235" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 3 -->
+              <rect x="240" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="285" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 03</text>
+              <line x1="240" y1="110" x2="330" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="240" y1="250" x2="330" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 4 -->
+              <rect x="335" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="380" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 04</text>
+              <line x1="335" y1="110" x2="425" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="335" y1="250" x2="425" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 5 (Central) -->
+              <rect x="430" y="70" width="90" height="220" fill="#FFFFFF" stroke="#00AD08" stroke-width="2"/>
+              <text x="475" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#008006" text-anchor="middle">CELL 05 ★</text>
+              <line x1="430" y1="110" x2="520" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="430" y1="250" x2="520" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 6 -->
+              <rect x="525" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="570" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 06</text>
+              <line x1="525" y1="110" x2="615" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="525" y1="250" x2="615" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 7 -->
+              <rect x="620" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="665" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 07</text>
+              <line x1="620" y1="110" x2="710" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="620" y1="250" x2="710" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 8 -->
+              <rect x="715" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="760" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 08</text>
+              <line x1="715" y1="110" x2="805" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="715" y1="250" x2="805" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Célula 9 -->
+              <rect x="810" y="70" width="90" height="220" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+              <text x="855" y="180" font-family="'Montserrat', sans-serif" font-size="11" font-weight="800" fill="#334155" text-anchor="middle">CELL 09</text>
+              <line x1="810" y1="110" x2="900" y2="110" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+              <line x1="810" y1="250" x2="900" y2="250" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="4 2"/>
+
+              <!-- Indicadores de Borda de Ataque e Borda de Fuga -->
+              <rect x="50" y="70" width="850" height="12" fill="#E2E8F0" opacity="0.6"/>
+              <rect x="50" y="278" width="850" height="12" fill="#CBD5E1" opacity="0.6"/>
+
+              <!-- ========================================== -->
+              <!-- 2. VISTA INFERIOR ESQUERDA: PERFIL AEROFÓLIO -->
+              <!-- ========================================== -->
+              <g>
+                <text x="60" y="340" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" fill="#1E293B">PERFIL AEROFÓLIO (RIB PROFILE)</text>
+                <text x="60" y="354" font-family="'Montserrat', sans-serif" font-size="8.5" font-weight="600" fill="#64748B">CORTE LONGITUDINAL DA COSTELA / NERVURA</text>
+
+                <!-- Airfoil Shape -->
+                <path d="M 60,450 C 60,400 120,390 200,390 C 280,390 350,420 380,450 C 350,470 280,480 200,480 C 120,480 60,470 60,450 Z" fill="#FFFFFF" stroke="#334155" stroke-width="2"/>
+                
+                <!-- Boca de ar (Leading edge opening) -->
+                <path d="M 60,430 C 70,440 70,460 60,470" fill="none" stroke="#DC2626" stroke-width="2.5"/>
+                <text x="100" y="445" font-family="'Montserrat', sans-serif" font-size="8" font-weight="700" fill="#475569" text-anchor="middle">BOCAS DE AR</text>
+
+                <!-- Cross-ports internos (Círculos de alívio) -->
+                <circle cx="180" cy="435" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.2" stroke-dasharray="3 2"/>
+                <circle cx="230" cy="435" r="14" fill="#F1F5F9" stroke="#64748B" stroke-width="1.2" stroke-dasharray="3 2"/>
+                <text x="205" y="440" font-family="'Montserrat', sans-serif" font-size="8" font-weight="700" fill="#475569" text-anchor="middle">CROSS-PORTS</text>
+
+                <!-- Borda de fuga aerofólio -->
+                <text x="330" y="445" font-family="'Montserrat', sans-serif" font-size="8" font-weight="700" fill="#475569" text-anchor="middle">B. FUGA</text>
+
+                <!-- Pontos de fixação de linha sob o perfil -->
+                <circle cx="120" cy="478" r="3" fill="#00AD08"/>
+                <text x="120" y="495" font-family="'Montserrat', sans-serif" font-size="7.5" font-weight="700" fill="#64748B" text-anchor="middle">LINHA A</text>
+                
+                <circle cx="190" cy="480" r="3" fill="#00AD08"/>
+                <text x="190" y="495" font-family="'Montserrat', sans-serif" font-size="7.5" font-weight="700" fill="#64748B" text-anchor="middle">LINHA B</text>
+
+                <circle cx="260" cy="477" r="3" fill="#00AD08"/>
+                <text x="260" y="495" font-family="'Montserrat', sans-serif" font-size="7.5" font-weight="700" fill="#64748B" text-anchor="middle">LINHA C</text>
+
+                <circle cx="330" cy="465" r="3" fill="#00AD08"/>
+                <text x="330" y="495" font-family="'Montserrat', sans-serif" font-size="7.5" font-weight="700" fill="#64748B" text-anchor="middle">LINHA D</text>
+              </g>
+
+              <!-- ========================================== -->
+              <!-- 3. VISTA INFERIOR CENTRO: LINHAS, SLIDER & RISERS -->
+              <!-- ========================================== -->
+              <g>
+                <text x="440" y="340" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" fill="#1E293B">SUSPENSÃO & CONTROLE</text>
+                <text x="440" y="354" font-family="'Montserrat', sans-serif" font-size="8.5" font-weight="600" fill="#64748B">CASCATAS, SLIDER & TIRANTES</text>
+
+                <!-- Bloco Linhas de Suspensão -->
+                <rect x="440" y="380" width="130" height="90" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+                <!-- Linhas desenhadas -->
+                <line x1="455" y1="390" x2="495" y2="455" stroke="#475569" stroke-width="1.2"/>
+                <line x1="480" y1="390" x2="505" y2="455" stroke="#475569" stroke-width="1.2"/>
+                <line x1="530" y1="390" x2="515" y2="455" stroke="#475569" stroke-width="1.2"/>
+                <line x1="555" y1="390" x2="525" y2="455" stroke="#475569" stroke-width="1.2"/>
+                <text x="505" y="425" font-family="'Montserrat', sans-serif" font-size="8" font-weight="800" fill="#1E293B" text-anchor="middle">LINHAS A/B/C</text>
+
+                <!-- Bloco Linhas de Freio -->
+                <rect x="580" y="380" width="120" height="90" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+                <line x1="595" y1="390" x2="635" y2="455" stroke="#E11D48" stroke-width="1.5"/>
+                <line x1="640" y1="390" x2="640" y2="455" stroke="#E11D48" stroke-width="1.5"/>
+                <line x1="685" y1="390" x2="645" y2="455" stroke="#E11D48" stroke-width="1.5"/>
+                <text x="640" y="425" font-family="'Montserrat', sans-serif" font-size="8" font-weight="800" fill="#E11D48" text-anchor="middle">FREIOS / STEERING</text>
+
+                <!-- Slider -->
+                <rect x="460" y="485" width="120" height="80" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+                <rect x="475" y="495" width="90" height="55" rx="3" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
+                <!-- Ilhoses do Slider -->
+                <circle cx="485" cy="505" r="4" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+                <circle cx="555" cy="505" r="4" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+                <circle cx="485" cy="540" r="4" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+                <circle cx="555" cy="540" r="4" fill="#E2E8F0" stroke="#0F172A" stroke-width="1.5"/>
+                <text x="520" y="525" font-family="'Montserrat', sans-serif" font-size="8.5" font-weight="800" fill="#1E293B" text-anchor="middle">SLIDER & ILHOSES</text>
+
+                <!-- Tirantes (Risers) & 3-Ring -->
+                <rect x="590" y="485" width="110" height="80" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+                <line x1="615" y1="495" x2="615" y2="555" stroke="#1E293B" stroke-width="3"/>
+                <line x1="645" y1="495" x2="645" y2="555" stroke="#1E293B" stroke-width="3"/>
+                <line x1="675" y1="495" x2="675" y2="555" stroke="#1E293B" stroke-width="3"/>
+                <!-- 3-Ring Rings -->
+                <circle cx="645" cy="545" r="5" fill="none" stroke="#D97706" stroke-width="2"/>
+                <text x="645" y="525" font-family="'Montserrat', sans-serif" font-size="8" font-weight="800" fill="#1E293B" text-anchor="middle">TIRANTES / 3-RING</text>
+              </g>
+
+              <!-- ========================================== -->
+              <!-- 4. VISTA INFERIOR DIREITA: VELAME PILOTO & BRIDLE -->
+              <!-- ========================================== -->
+              <g>
+                <text x="760" y="340" font-family="'Montserrat', sans-serif" font-size="12" font-weight="800" fill="#1E293B">PILOTO & EXTRAÇÃO</text>
+                <text x="760" y="354" font-family="'Montserrat', sans-serif" font-size="8.5" font-weight="600" fill="#64748B">PILOT CHUTE, BRIDLE & KILL-LINE</text>
+
+                <!-- Pilot Chute -->
+                <rect x="760" y="380" width="150" height="100" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+                <!-- Pilot Chute circle -->
+                <circle cx="835" cy="430" r="32" fill="#F8FAFC" stroke="#0284C7" stroke-width="2"/>
+                <circle cx="835" cy="430" r="14" fill="#E0F2FE" stroke="#0284C7" stroke-width="1.5" stroke-dasharray="3 2"/>
+                <text x="835" y="433" font-family="'Montserrat', sans-serif" font-size="8" font-weight="800" fill="#0369A1" text-anchor="middle">PILOT CHUTE</text>
+
+                <!-- Bridle -->
+                <rect x="760" y="490" width="150" height="75" rx="4" fill="#FFFFFF" stroke="#64748B" stroke-width="1.5"/>
+                <path d="M 780,528 Q 835,505 890,528" fill="none" stroke="#059669" stroke-width="4"/>
+                <circle cx="835" cy="520" r="4" fill="#10B981"/>
+                <text x="835" y="550" font-family="'Montserrat', sans-serif" font-size="8" font-weight="800" fill="#065F46" text-anchor="middle">FITA BRIDLE / KILL-LINE</text>
+              </g>
+
+              <!-- Grupo de Polígonos Interativos (Injetados via JS) -->
+              <g id="zonesGroup"></g>
+            </svg>
+
+            <!-- Clean Target Badge Tooltip -->
+            <div class="clean-tooltip" id="cleanTooltip">
+              <span class="tt-code" id="ttZoneCode">CEL-01</span>
+              <span class="tt-name" id="ttZoneName">Célula 01</span>
+              <span class="tt-status ok" id="ttZoneStatus">CONFORME</span>
+            </div>
+
+          </div>
+
+          <!-- Clean Subtitle Bar -->
+          <div class="diagram-legend">
+            <div class="legend-dot-item">
+              <span class="dot ok"></span>
+              <span>Conforme (Toque para avaria)</span>
+            </div>
+            <div class="legend-dot-item">
+              <span class="dot defect"></span>
+              <span>Com Avaria Registrada</span>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Defect Details List (Aparece de forma limpa quando há avarias) -->
+      <section class="defects-summary-section" id="defectsSection" style="display: none;">
+        <div class="section-title-clean">
+          <span>AVARIAS APONTADAS NO EQUIPAMENTO (<span id="defectsListCount">0</span>)</span>
+        </div>
+        <div class="defects-clean-list" id="defectsListContainer">
+          <!-- Renderizado via JS -->
+        </div>
+      </section>
+
+      <!-- Standard Observation Field -->
+      <section class="field-block">
+        <label class="field-label">OBSERVAÇÕES DO RIGGER / LAUDO</label>
+        <textarea class="form-textarea" placeholder="Digite notas de inspeção, número de saltos ou observações do velame..." rows="3"></textarea>
+      </section>
+
+      <!-- Standard App Bottom Action Buttons -->
+      <div class="bottom-buttons-stack">
+        <button class="btn-primary-green" onclick="submitInspection()">
+          SALVAR E PROSSEGUIR
+        </button>
+        <button class="btn-secondary-dark" onclick="saveDraft()">
+          SALVAR RASCUNHO
+        </button>
+      </div>
+
+      <div style="height: 30px;"></div>
+    </main>
+
+  </div>
+
+  <!-- Bottom Sheet / Modal de Detalhe Rápido de Avaria -->
+  <div class="modal-backdrop" id="defectModal">
+    <div class="modal-sheet">
+      <div class="sheet-bar"></div>
+      
+      <div class="sheet-header">
+        <div>
+          <span class="sheet-code" id="modalZoneCode">SEC-01</span>
+          <h3 class="sheet-title" id="modalZoneTitle">Célula 1 - Borda de Ataque</h3>
+        </div>
+        <button class="btn-close-sheet" onclick="closeDefectModal()">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="sheet-body">
+        
+        <!-- Toggle Status -->
+        <div class="toggle-status-group">
+          <button class="status-btn ok" id="btnStatusOk" onclick="setModalStatus('ok')">
+            <i class="fa-solid fa-circle-check"></i> Conforme
+          </button>
+          <button class="status-btn defect selected" id="btnStatusDefect" onclick="setModalStatus('defect')">
+            <i class="fa-solid fa-circle-exclamation"></i> Com Avaria
+          </button>
+        </div>
+
+        <div id="defectDetailsForm">
+          
+          <div class="form-row">
+            <label class="input-label">Tipo de Dano / Não-Conformidade</label>
+            <div class="chips-container" id="damageTypeChips">
+              <button class="chip active" onclick="selectDamageChip(this)">Rasgo / Furo</button>
+              <button class="chip" onclick="selectDamageChip(this)">Descustura</button>
+              <button class="chip" onclick="selectDamageChip(this)">Queimadura / Fricção</button>
+              <button class="chip" onclick="selectDamageChip(this)">Dano em Linha</button>
+              <button class="chip" onclick="selectDamageChip(this)">Desgaste no Slider</button>
+              <button class="chip" onclick="selectDamageChip(this)">Contaminação</button>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="input-label">Gravidade</label>
+            <div class="severity-grid">
+              <label class="sev-card low">
+                <input type="radio" name="modalSeverity" value="Leve" checked>
+                <span>Leve (Reparo Rápido)</span>
+              </label>
+              <label class="sev-card med">
+                <input type="radio" name="modalSeverity" value="Média">
+                <span>Média (Substituição)</span>
+              </label>
+              <label class="sev-card high">
+                <input type="radio" name="modalSeverity" value="Grave">
+                <span>Grave (Grounded)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label class="input-label">Detalhes da Avaria (Opcional)</label>
+            <input type="text" class="form-input" id="modalNotesInput" placeholder="Ex: Micro-furo de 5mm na costela da célula 3">
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="sheet-footer">
+        <button class="btn-primary-green" onclick="confirmZoneDefect()">
+          CONFIRMAR
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Developer JSON Drawer -->
+  <aside class="json-drawer" id="jsonDrawer">
+    <div class="drawer-head">
+      <strong>Payload JSON (QuestionsBuilder)</strong>
+      <button class="btn-close-sheet" onclick="toggleJsonDrawer()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="drawer-content">
+      <pre><code id="jsonCodeView"></code></pre>
+    </div>
+  </aside>
+
+  <!-- Clean Toast -->
+  <div class="clean-toast" id="appToast">
+    <span id="toastMsg">Operação realizada</span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
