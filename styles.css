@@ -295,7 +295,7 @@ body {
 .diagram-viewport {
   position: relative;
   width: 100%;
-  aspect-ratio: 1000 / 600;
+  aspect-ratio: 1600 / 1180;
   background: #FAFAFA;
   border: 1px solid var(--cd-border);
   border-radius: 6px;
@@ -319,34 +319,34 @@ body {
 }
 
 /* Standard Clean Hotspots */
-.zone-polygon {
+.zone-marker {
   cursor: pointer;
   transition: fill 0.15s ease, stroke 0.15s ease;
   vector-effect: non-scaling-stroke;
 }
 
 /* Estado Normal / Conforme (Verde Sóbrio) */
-.zone-polygon.state-ok {
+.zone-marker.state-ok {
   fill: var(--state-ok-fill);
   stroke: var(--state-ok-stroke);
   stroke-width: 1.5;
   stroke-dasharray: 4 2;
 }
 
-.zone-polygon.state-ok:hover {
+.zone-marker.state-ok:hover {
   fill: rgba(0, 173, 8, 0.35);
   stroke-width: 2.2;
 }
 
 /* Estado Com Avaria (Vermelho Marcante) */
-.zone-polygon.state-defect {
+.zone-marker.state-defect {
   fill: var(--state-defect-fill);
   stroke: var(--state-defect-stroke);
   stroke-width: 2.5;
   stroke-dasharray: none;
 }
 
-.zone-polygon.state-defect:hover {
+.zone-marker.state-defect:hover {
   fill: rgba(211, 47, 47, 0.45);
 }
 

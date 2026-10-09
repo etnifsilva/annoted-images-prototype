@@ -3,68 +3,79 @@
  * 100% focused on Ram-Air Parachute Inspection (Canopy, Cells, Lines, Slider, Risers)
  */
 
-// Zonas Técnicas do Paraquedas (Mapeadas no SVG 1000x800)
+// Hotspots do Mapa de Linhas - fonte: coordinates.txt (x,y,rótulo)
+// IMPORTANTE: as coordenadas de coordinates.txt foram anotadas sobre o desenho
+// deitado (girado 90°), em ~50% da escala da imagem, com leve escala
+// não-uniforme. O JPEG tem EXIF Orientation 6, então o navegador exibe
+// 1600 x 1180 (desenho em pé). A afim abaixo já está composta com essa
+// rotação (dispX = 1599 - rawY, dispY = rawX) e projeta cada ponto no
+// espaço de exibição, viewBox 1600 x 1180:
+//   imgX = A*x + B*y + C
+//   imgY = D*x + E*y + F
+// (afim bruta calibrada por mínimos quadrados contra os nós do desenho;
+// erro <= ~9px)
+const ANNOT_TO_IMG = { A: -1.9859, B: 0.0086, C: 1782.8384, D: 0.0369, E: 2.1459, F: -112.7682 };
+
+function mapToImage(x, y) {
+  const m = ANNOT_TO_IMG;
+  return { x: m.A * x + m.B * y + m.C, y: m.D * x + m.E * y + m.F };
+}
+
+// Raio do hotspot em unidades do viewBox da imagem (1600x1180)
+const HOTSPOT_RADIUS = 36;
+
 const PARACHUTE_ZONES = [
-  // 1. VELAME PRINCIPAL - 9 CÉLULAS (PLANTA / EXTRADORSO)
-  { id: "CEL-01", name: "Célula 01 (Ponta Esquerda)", group: "Velame", points: "50,70 140,70 140,290 50,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-02", name: "Célula 02 (Esquerda)", group: "Velame", points: "145,70 235,70 235,290 145,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-03", name: "Célula 03 (Esquerda)", group: "Velame", points: "240,70 330,70 330,290 240,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-04", name: "Célula 04 (Centro-Esquerda)", group: "Velame", points: "335,70 425,70 425,290 335,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-05", name: "Célula 05 (Célula Central)", group: "Velame", points: "430,70 520,70 520,290 430,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-06", name: "Célula 06 (Centro-Direita)", group: "Velame", points: "525,70 615,70 615,290 525,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-07", name: "Célula 07 (Direita)", group: "Velame", points: "620,70 710,70 710,290 620,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-08", name: "Célula 08 (Direita)", group: "Velame", points: "715,70 805,70 805,290 715,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "CEL-09", name: "Célula 09 (Ponta Direita)", group: "Velame", points: "810,70 900,70 900,290 810,290", status: "ok", damageType: null, severity: "Leve", notes: "" },
-
-  // 2. ESTABILIZADORES LATERAIS (STABILIZERS / AIR DEFLECTORS)
-  { id: "EST-ESQ", name: "Estabilizador Lateral Esq.", group: "Estabilizador", points: "20,100 45,100 45,260 20,260", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "EST-DIR", name: "Estabilizador Lateral Dir.", group: "Estabilizador", points: "905,100 930,100 930,260 905,260", status: "ok", damageType: null, severity: "Leve", notes: "" },
-
-  // 3. PERFIL AEROFÓLIO & COSTELAS INTERNAS (AIRFOIL PROFILE)
-  { id: "PRF-ATAQ", name: "Borda de Ataque / Bocas de Ar", group: "Perfil", points: "60,390 150,390 150,490 60,490", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "PRF-COST", name: "Costelas / Cross-Ports Internos", group: "Perfil", points: "155,390 280,390 280,490 155,490", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "PRF-FUGA", name: "Borda de Fuga / Saída do Aerofólio", group: "Perfil", points: "285,390 380,390 380,490 285,490", status: "ok", damageType: null, severity: "Leve", notes: "" },
-
-  // 4. SUSPENSÃO, LINHAS & CONTROLE (LINES & SLIDER)
-  { id: "LIN-SUSP", name: "Linhas de Suspensão (Grupo A / B / C)", group: "Linhas", points: "440,380 570,380 570,470 440,470", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "LIN-FREI", name: "Linhas de Freio / Linhas de Controle", group: "Linhas", points: "580,380 700,380 700,470 580,470", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "EQP-SLID", name: "Slider (Deslizador e Ilhoses)", group: "Controle", points: "460,485 580,485 580,565 460,565", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "EQP-RISE", name: "Tirantes (Risers) & Argolas 3-Ring", group: "Controle", points: "590,485 700,485 700,565 590,565", status: "ok", damageType: null, severity: "Leve", notes: "" },
-
-  // 5. VELAME PILOTO & EXTRAÇÃO (PILOT CHUTE & BRIDLE)
-  { id: "PIL-CHUT", name: "Velame Piloto (Pilot Chute)", group: "Extração", points: "760,380 910,380 910,480 760,480", status: "ok", damageType: null, severity: "Leve", notes: "" },
-  { id: "PIL-BRID", name: "Fita de Extração (Bridle & Kill-line)", group: "Extração", points: "760,490 910,490 910,565 760,565", status: "ok", damageType: null, severity: "Leve", notes: "" }
+  { id: "A1", name: "Ponto A1", group: "Mapa de Linhas", x: 193, y: 88, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A2", name: "Ponto A2", group: "Mapa de Linhas", x: 261, y: 84, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A3", name: "Ponto A3", group: "Mapa de Linhas", x: 329, y: 82, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A4", name: "Ponto A4", group: "Mapa de Linhas", x: 491, y: 229, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A5", name: "Ponto A5", group: "Mapa de Linhas", x: 191, y: 166, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A6", name: "Ponto A6", group: "Mapa de Linhas", x: 257, y: 168, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A7", name: "Ponto A7", group: "Mapa de Linhas", x: 331, y: 174, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A8", name: "Ponto A8", group: "Mapa de Linhas", x: 325, y: 131, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A9", name: "Ponto A9", group: "Mapa de Linhas", x: 259, y: 129, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A10", name: "Ponto A10", group: "Mapa de Linhas", x: 193, y: 125, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A11", name: "Ponto A11", group: "Mapa de Linhas", x: 505, y: 334, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A12", name: "Ponto A12", group: "Mapa de Linhas", x: 429, y: 225, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A13", name: "Ponto A13", group: "Mapa de Linhas", x: 364, y: 223, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A14", name: "Ponto A14", group: "Mapa de Linhas", x: 427, y: 147, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A15", name: "Ponto A15", group: "Mapa de Linhas", x: 427, y: 108, status: "ok", damageType: null, severity: "Leve", notes: "" },
+  { id: "A16", name: "Ponto A16", group: "Mapa de Linhas", x: 394, y: 127, status: "ok", damageType: null, severity: "Leve", notes: "" }
 ];
 
 let activeSelectedZone = null;
 let currentModalStatus = "defect";
 
 document.addEventListener("DOMContentLoaded", () => {
-  renderSvgPolygons();
+  renderZoneMarkers();
   updateCounters();
   updateJsonPayload();
   startClock();
 });
 
-function renderSvgPolygons() {
+function renderZoneMarkers() {
   const group = document.getElementById("zonesGroup");
   if (!group) return;
   group.innerHTML = "";
 
   PARACHUTE_ZONES.forEach(zone => {
-    const poly = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-    poly.setAttribute("points", zone.points);
-    poly.setAttribute("class", `zone-polygon state-${zone.status}`);
-    poly.setAttribute("id", `poly-${zone.id}`);
-    
-    // Tooltip
-    poly.addEventListener("mouseenter", () => showTooltip(zone));
-    poly.addEventListener("mouseleave", () => hideTooltip());
-    
-    // Click
-    poly.addEventListener("click", () => handleZoneClick(zone));
+    const p = mapToImage(zone.x, zone.y);
 
-    group.appendChild(poly);
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", p.x.toFixed(2));
+    circle.setAttribute("cy", p.y.toFixed(2));
+    circle.setAttribute("r", HOTSPOT_RADIUS);
+    circle.setAttribute("class", `zone-marker state-${zone.status}`);
+    circle.setAttribute("id", `mark-${zone.id}`);
+
+    // Tooltip
+    circle.addEventListener("mouseenter", () => showTooltip(zone));
+    circle.addEventListener("mouseleave", () => hideTooltip());
+
+    // Click
+    circle.addEventListener("click", () => handleZoneClick(zone));
+
+    group.appendChild(circle);
   });
 
   renderDefectsSummaryList();
@@ -172,7 +183,7 @@ function confirmZoneDefect() {
   }
 
   closeDefectModal();
-  renderSvgPolygons();
+  renderZoneMarkers();
   updateCounters();
   updateJsonPayload();
 }
@@ -183,7 +194,7 @@ function removeDefectDirect(zoneId) {
     zone.status = "ok";
     zone.damageType = null;
     zone.notes = "";
-    renderSvgPolygons();
+    renderZoneMarkers();
     updateCounters();
     updateJsonPayload();
     showToast(`Avaria removida de ${zone.name}`);
@@ -196,7 +207,7 @@ function resetAllZones() {
     z.damageType = null;
     z.notes = "";
   });
-  renderSvgPolygons();
+  renderZoneMarkers();
   updateCounters();
   updateJsonPayload();
   showToast("Todas as seções foram resetadas");
@@ -258,7 +269,7 @@ function saveDraft() {
 }
 
 function showInfoAlert() {
-  alert("Instruções de Inspeção do Paraquedas:\n\n1. Inspecione visualmente o velame, células, costelas, linhas e slider.\n2. Toque no componente com avaria para marcar em vermelho.\n3. Indique o tipo de dano e gravidade.\n4. Salve e conclua o laudo.");
+  alert("Instruções de Inspeção do Paraquedas:\n\n1. Inspecione visualmente o mapa de linhas do velame.\n2. Toque no ponto com avaria para marcar em vermelho.\n3. Indique o tipo de dano e gravidade.\n4. Salve e conclua o laudo.");
 }
 
 function updateJsonPayload() {
